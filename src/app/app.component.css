@@ -1,0 +1,21 @@
+.floating-icons {
+  position: fixed;
+  bottom: 20px; /* Ajusta según sea necesario */
+  right: 20px; /* Ajusta según sea necesario */
+  display: flex;
+  gap: 10px; /* Espacio entre los íconos */
+  z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
+}
+
+.floating-icon {
+  background-color: rgba(255, 0, 0, 0.8); /* Color de fondo semitransparente */
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.floating-icon img {
+  margin-right: 8px; /* Espacio entre el ícono y el texto */
+}

@@ -1,0 +1,49 @@
+/* You can add global styles to this file, and also import other style files */
+
+.hand {
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #10a48e !important;
+  border-color: #116155 !important;
+}
+
+
+.text-primary {
+  color: #10a48e !important;
+}
+
+.text-primary-encuba {
+  color: #10a48e !important;
+}
+
+.btn-block {
+  width: 100% !important;
+}
+
+.font-lg {
+  font-size: 32px !important;
+}
+
+.press-button {
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.1s ease; /* Suavizar la transición */
+  
+  /* Sombra para efecto de profundidad */
+}
+
+.press-button:active {
+  /* Cuando el botón está presionado */
+  box-shadow: 0 2px #ccc;
+  transform: translateY(3px); /* Efecto de "hundimiento" */
+}
+
+.active-encuba {
+  background-color: #10a48e !important;
+}

@@ -1,0 +1,43 @@
+<nav class="navbar bg-body-tertiary">
+  <div class="d-flex w-100 justify-content-around align-items-center">
+    <button class="btn btn-secondary btn-sm" (click)="home()">
+      <i class="fa fa-home "></i>
+    </button>
+    <div class="d-flex justify-content-around align-items-center gap-2 ">
+      <img src="assets/images/logo.png" alt="Logo" width="40" height="40" class="d-inline-block align-text-top">
+      <div class="d-flex flex-column text-center">
+        Proceso de Pesaje
+      <strong >
+        Animales {{ animalStatusSelected.name | titlecase }}
+      </strong>
+      </div>
+    </div>
+    <span class="navbar-text d-flex text-danger">
+      <button class="btn btn-danger btn-sm" (click)="logout()">
+         <i class="fa fa-window-close" aria-hidden="true"> Salir del sistema </i>
+      </button>
+    
+    
+     
+    </span>
+  </div>
+</nav>
+<div class="container pt-2">
+  <div class="row">
+    <div class="col-12 pt-2 ">
+      <div class="row" *ngIf="!animalStatusSelected.id">
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xs-12 mb-3 " *ngFor="let a of animalStatus">
+          <div class="hand" style="border-radius: 30px;" (click)="toggleSelectAnimalStatus(a)">
+            <div class="p-1 pt-3 rounded text-center">
+              <img src="{{a.image}}" alt="{{a.name}}" class="press-button" width="100%" height="440"> <br>
+            </div>
+          </div>
+        </div>
+      </div>
+      <app-vivos *ngIf="animalStatusSelected.id===1"></app-vivos>
+      <app-faenados *ngIf="animalStatusSelected.id===2"></app-faenados>
+    </div>
+  </div>
+</div>
+
+
