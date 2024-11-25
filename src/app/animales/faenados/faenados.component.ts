@@ -11,10 +11,6 @@ import Swal from "sweetalert2";
 import { BALANCE } from '../../constants/balance.constants';
 
 // Asigna las fuentes a pdfMake
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
 @Component({
   selector: 'app-faenados',
   standalone: true,

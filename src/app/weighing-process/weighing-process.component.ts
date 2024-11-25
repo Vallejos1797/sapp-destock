@@ -33,7 +33,7 @@ export class WeighingProcessComponent implements OnInit {
     private Main: MainService,
     private Router: Router
   ) {
-
+    console.log('llega al home..')
   }
 
   ngOnInit(): void {

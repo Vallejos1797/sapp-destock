@@ -26,7 +26,7 @@
     "bootstrap": "^5.3.3",
     "html-to-pdfmake": "^2.5.13",
     "ngx-bootstrap": "^18.0.2",
-    "pdfmake": "^0.2.14",
+    "pdfmake": "^0.2.15",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.12.4",
     "tslib": "^2.3.0",

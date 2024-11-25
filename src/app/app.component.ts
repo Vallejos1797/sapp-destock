@@ -7,7 +7,7 @@ import {NgIf} from "@angular/common";
   standalone: true,
     imports: [RouterOutlet, NgIf],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'] // Corrección aquí
 })
 export class AppComponent implements  OnInit{
   title = 'super-meatboy-front';

@@ -1,4 +1,5 @@
 <div class="container">
+  <h1>hhola mundo</h1>
   <div class="row mt-5 pt-5 align-items-center">
     <div class="col-lg-4 col-md-3 col-xs-12"></div>
     <div class="col-lg-4 col-md-6 col-xs-12 text-cener align-items-center">
@@ -42,23 +43,23 @@
               </div>
 
               <div class="col-12 mt-3 text-center">
-                <button class="btn btn-primary btn-lg" [disabled]="loginForm.invalid" (click)="login()">
+                <button class="btn btn-primary btn-lg" (click)="login()">
                   Ingresar
                 </button>
               </div>
             </div>
           </form>
           <div class="flex flex-col items-start m-2">
-            <button 
+            <button
               class=" btn btn-secondary text-white font-bold py-2 px-4 rounded flex items-center"
               (click)="toggleContenido()"
             >
               <i class="fas fa-cog"></i> <!-- Icono de engranaje -->
-           
+
             </button>
-          
+
             <div *ngIf="mostrarContenido" class="mt-2 border p-4 rounded bg-gray-100">
-            
+
               <div>
                 <span>Puerto de balanza:
                 </span>
@@ -75,7 +76,7 @@
                   <option value="10">10</option>
                 </select>
               </div>
-           
+
             </div>
           </div>
         </div>
