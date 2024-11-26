@@ -1,0 +1,67 @@
+
+.btn-check:checked + .btn,
+.btn.active,
+.btn.show,
+.btn:first-child:active,
+:not(.btn-check) + .btn:active {
+  color: white; /* Color del texto para botones activos */
+  background-color: #0ea38d; /* Color de fondo para botones activos */
+  border-color: #0ea38d; /* Color del borde para botones activos */
+}
+
+/* Estilo para botones no activos */
+.btn {
+  color: #0ea38d; /* Color del texto para botones no activos */
+  background-color: transparent; /* Fondo transparente */
+  border: 2px solid #0ea38d; /* Borde con color definido */
+}
+
+/* Efecto de hover para botones no activos */
+.btn:not(.active):hover {
+  background-color: rgba(25, 134, 84, 0.1); /* Fondo con un ligero tono al pasar el mouse */
+}
+
+.btn-guardar {
+  color: #0a4fe3; /* Color del texto para botones no activos */
+  background-color: transparent; /* Fondo transparente */
+  border: 2px solid #0a4fe3; /* Borde con color definido */
+}
+
+/* Efecto de hover para botones no activos */
+.btn-guardar:not(.active):hover {
+  color: white;
+  background-color: rgba(10, 79, 227, 0.46); /* Fondo con un ligero tono al pasar el mouse */
+}
+
+.btn-guardando{
+  color: white;
+  background-color: rgba(10, 79, 227, 0.46); /* Fondo con un ligero tono al pasar el mouse */
+}
+
+.btn-imprimir {
+  color: #d98412; /* Color del texto para botones no activos */
+  background-color: transparent; /* Fondo transparente */
+  border: 2px solid #d98412; /* Borde con color definido */
+}
+
+/* Efecto de hover para botones no activos */
+.btn-imprimir:not(.active):hover {
+  color: white;
+  background-color: rgba(217, 132, 18, 0.77); /* Fondo con un ligero tono al pasar el mouse */
+}
+
+
+.fila-con-peso {
+  background-color: #a3bfa9
+  ;
+}
+
+.fila-normal {
+  background-color: white; /* Color por defecto */
+}
+
+/* estilos.css */
+.fila-transparente td {
+  background-color: transparent; /* Blanco con 50% de transparencia */
+}
+

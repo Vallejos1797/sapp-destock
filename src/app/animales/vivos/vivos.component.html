@@ -1,0 +1,140 @@
+<div class="container card-body mt-4">
+  <!-- Encabezado -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>Fecha de F: {{ getFormattedDate() }}</h4>
+  </div>
+  <div *ngIf="loadingEspecies && loadingAnimales" class="full-screen-spinner">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+  <div *ngIf="!loadingEspecies ">
+
+    <!-- Botones de especies -->
+    <div class="d-flex mb-4 gap-2">
+      <h4>Especies:</h4>
+      <div class="btn-group" role="group" aria-label="Botones de especies">
+        <button
+          *ngFor="let especie of especies"
+          class="btn btn-outline-primary"
+          [ngClass]="{'active': selectedSpecies?.id === especie.id}"
+          (click)="onEspecieChange(especie)"
+        >
+          {{ especie.nombre }}
+        </button>
+      </div>
+
+<!--      <div *ngIf="especies.length > 3; else buttonGroup">-->
+<!--        <label for="speciesSelect">Seleccionar Especie:</label>-->
+<!--        <select id="speciesSelect" class="form-control" [(ngModel)]="selectedSpecies" (change)="onEspecieChange($event.target.value)">-->
+<!--          <option *ngFor="let especie of especies" [ngValue]="especie">-->
+<!--            {{ especie.nombre }}-->
+<!--          </option>-->
+<!--        </select>-->
+<!--      </div>-->
+
+<!--      <ng-template #buttonGroup>-->
+<!--        <div class="btn-group" role="group" aria-label="Botones de especies">-->
+<!--          <button-->
+<!--            *ngFor="let especie of especies"-->
+<!--            class="btn btn-outline-primary"-->
+<!--            [ngClass]="{'active': selectedSpecies?.id === especie.id}"-->
+<!--            (click)="onEspecieChange(especie)"-->
+<!--          >-->
+<!--            {{ especie.nombre }}-->
+<!--          </button>-->
+<!--        </div>-->
+<!--      </ng-template>-->
+
+    </div>
+
+    <!-- Tabla de animales -->
+    <div *ngIf="selectedSpecies">
+      <h5 class="mb-3 text-success">{{ selectedSpecies.nombre }}</h5>
+
+      <div class="mb-1 d-flex justify-content-between align-items-start gap-2">
+        <div class="d-flex gap-2 w-50">
+          <input type="text"
+                 class="form-control "
+                 (change)="changeSearch($event)"
+                 [(ngModel)]="this.filter.code"
+                 style="text-transform: uppercase;"
+                 placeholder="Buscar por SubCód+Cód. Destinatario">
+          <button  class="btn btn-secondary" (click)="getAnimals()">BUSCAR</button>
+
+        </div>
+        <nav>
+          <ul class="pagination">
+            <li class="page-item" [class.disabled]="table.current_page == 1">
+              <a class="page-link" (click)="changePage(table.current_page - 1)">Anterior</a>
+            </li>
+            <li *ngFor="let page of [].constructor(totalPages); let i = index" class="page-item" [class.active]="table.current_page == (i + 1)">
+              <a class="page-link" (click)="changePage(+i + 1)"> {{ i + 1 }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="table.current_page == totalPages">
+              <a class="page-link" (click)="changePage(+table.current_page + 1)">Siguiente</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+
+      <table  class="table table-striped">
+        <thead>
+        <tr>
+          <th>SubCód+Cód. Destinatario</th>
+          <th>Etapa productiva</th>
+          <th>Peso</th>
+          <th>Opción</th>
+        </tr>
+        </thead>
+        <tbody  *ngIf="this.table.data.length==0 && !loadingAnimales">
+        <tr>
+          <td>    No se encontraron registros</td>
+          <td>    </td>
+          <td>    </td>
+          <td>    </td>
+
+        </tr>
+        </tbody>
+        <tbody  *ngIf="this.table.data.length==0 && loadingAnimales">
+        <tr>
+          <td>    Cargando registros...</td>
+          <td>    </td>
+          <td>    </td>
+          <td>    </td>
+
+        </tr>
+        </tbody>
+        <tbody *ngIf="this.table.data.length>0">
+
+        <tr *ngFor="let animal of this.table.data"
+            [ngClass]="{
+          'fila-con-peso': animal.peso_vivo ,
+          'fila-normal': !animal.peso_vivo,
+          'fila-transparente': true
+        }">
+
+          <td>{{ animal.SubCod + ' - ' + animal?.ingreso?.destinatario?.codigo }}</td>
+          <td>
+            <span>
+              {{ animal.tipo_acabado + ' ' + animal?.etapa_productiva + ' / ' + animal.genero }}
+            </span>
+            <br>
+            <samp>
+              {{' COD: ' + animal.codigo_agrocalidad }}
+            </samp>
+          </td>
+          <td>
+            {{ animal?.peso_vivo ?? '0.00' }} lb
+          </td>
+          <td>
+            <button *ngIf="!animal?.loading" class="btn  me-2 btn-guardar" (click)="guardar(animal)">GUARDAR</button>
+            <button *ngIf="animal?.loading" class="btn  btn-guardar ">Cargando...</button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
