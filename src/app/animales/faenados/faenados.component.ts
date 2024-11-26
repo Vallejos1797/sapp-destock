@@ -45,7 +45,6 @@ export class FaenadosComponent implements OnInit {
   constructor(private Main: MainService, private http: HttpClient) {}
 
   ngOnInit(): void {
-    console.log('----', BALANCE.puerto);
     this.user = this.Main.getSession();
     this.getEspecies('getEspeciesFaenados').then(() => this.getAnimals());
   }
@@ -144,7 +143,6 @@ export class FaenadosComponent implements OnInit {
         text: 'Error al obtener o guardar el peso',
         icon: 'warning',
       });
-      console.error('Error al obtener o guardar el peso:', error);
     } finally {
       animal.loading = false;
     }
@@ -161,21 +159,35 @@ export class FaenadosComponent implements OnInit {
     this.getAnimals();
   }
 
-  loadHtmlFile() {
+  loadHtmlFile(animal: any) {
     this.http
       .get('assets/my-template.html', { responseType: 'text' })
       .subscribe({
-        next: (response) => {
-          this.htmlContent = response;
+        next: (htmlTemplate) => {
+          // Llamar a replacePlaceholders para reemplazar datos
+          this.htmlContent = this.replacePlaceholders(htmlTemplate, animal);
         },
         error: (err) => {
-          console.error('Error al cargar el archivo HTML:', err);
         },
       });
   }
+  // Método para reemplazar placeholders en el HTML
+  replacePlaceholders(html: string, animal: any): string {
+    return html
+      .replace(/{{ORIGEN}}/g, animal.origen)
+      .replace(/{{DESTINO}}/g, animal.destino)
+      .replace(/{{DESTINATARIO}}/g, animal.ingreso.destinatario.nombre)
+      .replace(/{{CODIGO_DESTINATARIO}}/g, animal.ingreso.destinatario.codigo)
+      .replace(/{{MOVILIZACION}}/g, animal.movilizacion)
+      .replace(/{{ESPECIE}}/g, animal.ingreso.especie)
+      .replace(/{{CODIGO_ANIMAL}}/g, animal.codigo_secuencial)
+      .replace(/{{PESO_CANAL}}/g, animal.peso_faenado)
+      .replace(/{{FECHA_F}}/g, animal.ingreso.fecha_faenamiento)
+      .replace(/{{SUBCOD}}/g, animal.SubCod);
+  }
 
   async imprimir(animal: any) {
-    await this.loadHtmlFile();
+    await this.loadHtmlFile(animal);
 
     const container = document.createElement('div');
     container.style.position = 'absolute';

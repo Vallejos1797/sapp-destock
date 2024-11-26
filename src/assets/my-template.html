@@ -34,6 +34,13 @@
     margin: 0px;
     padding: 0px !important;
   }
+
+  .table {
+    border-collapse: collapse;
+  }
+  .table tr {
+    border: 1px solid transparent /* Aplica bordes personalizados */
+  }
 </style>
 
 <body>
@@ -45,40 +52,36 @@
         <tr>
           <td colspan="3">ORIGEN:<br></td>
           <td colspan="11">
-            Ibarra ,
-            Ibarra,
-            Ibarra
+            {{ORIGEN}}
           </td>
           <td rowspan="5" style="vertical-align: middle; line-height:1; width:15%!important">
             <div >
-              <span style="font-size: 8px;">ID:<span style="font-size: 22px;">codigo</span></span>
+              <span style="font-size: 8px;">Cód:<span style="font-size: 18px;">{{CODIGO_DESTINATARIO}}</span></span>
               <br>
               <span style="font-size: 8px;">PESO.CANAL:</span>
-              <span style="font-size: 22px;">123 LB.</span>
+              <span style="font-size: 18px;">{{PESO_CANAL}}Lb</span>
             </div>
           </td>
         </tr>
         <tr>
           <td colspan="3">DESTINO:<br></td>
           <td colspan="11">
-            Ibarra,
-            Ibarra,
-            Ibarra,
-            Ibarra
+            {{DESTINO}}
           </td>
         </tr>
         <tr>
           <td colspan="3" style="width: 85px!important;">DESTINATARIO</td>
-          <td colspan="11">Ibarra</td>
+          <td colspan="11">{{DESTINATARIO}}</td>
         </tr>
         <tr>
           <td colspan="3" style="width: 85px!important;">MOVILIZACIÓN</td>
-          <td colspan="11">Ibarra</td>
+          <td colspan="11">{{MOVILIZACION}}</td>
         </tr>
         <tr>
-          <td colspan="5"><strong>ESPECIE:</strong> Ibarra</td>
-          <td colspan="5"><strong>Fecha F.: </strong> Ibarra</td>
-          <td colspan="4"><strong>SubCód:</strong> Ibarra</td>
+          <td colspan="3"><strong>ESPECIE:</strong> {{ESPECIE}}</td>
+          <td colspan="3"><strong>Fecha F.: </strong> {{FECHA_F}}</td>
+          <td colspan="3">SubCód: <strong>{{SUBCOD}}</strong> </td>
+          <td colspan="3">ID: <strong>{{CODIGO_ANIMAL}}</strong> </td>
         </tr>
         </tbody>
       </table>
