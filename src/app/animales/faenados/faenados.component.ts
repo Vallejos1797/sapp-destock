@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, DatePipe, UpperCasePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MainService } from '../../services/main.service';
 import { firstValueFrom } from 'rxjs';
@@ -13,7 +13,7 @@ import { BALANCE } from '../../constants/balance.constants';
 @Component({
   selector: 'app-faenados',
   standalone: true,
-  imports: [CommonModule, FormsModule, UpperCasePipe, DatePipe],
+  imports: [CommonModule, FormsModule],
   templateUrl: './faenados.component.html',
   styleUrls: ['./faenados.component.css'],
 })

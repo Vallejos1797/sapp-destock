@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CommonModule, DatePipe, UpperCasePipe } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { MainService } from "../../services/main.service";
 import { firstValueFrom } from "rxjs";
 import Swal from "sweetalert2";
@@ -11,8 +11,7 @@ import { BALANCE } from '../../constants/balance.constants';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
-    UpperCasePipe],
+    FormsModule],
   templateUrl: './vivos.component.html',
   styleUrls: ['./vivos.component.css']
 })
