@@ -262,15 +262,15 @@ export class FaenadosComponent implements OnInit {
                 {
                   stack: [
                     {text: [
-                        {  text: 'ID:', bold: true,fontSize: 7, alignment: 'center'  }, // Estilo para 'ID:'
-                        { text: animal.codigo_secuencial, fontSize: 14 } // Estilo para el código secuencial
+                        {  text: 'Cód:', bold: true,fontSize: 6, alignment: 'center'  }, // Estilo para 'ID:'
+                        { text:animal.SubCod+'-'+animal.ingreso.destinatario.codigo, fontSize: 10 } // Estilo para el código secuencial
                       ],
                     },
-                    { text: 'PESO CANAL:', bold: true, fontSize: 7, alignment: 'center' },
-                    { text: animal.peso_faenado + ' LB', fontSize: 14, alignment: 'center' }
+                    { text: 'PESO CANAL:', bold: true, fontSize: 6, alignment: 'center' },
+                    { text: animal.peso_faenado + 'LB', fontSize: 12, alignment: 'center' }
                   ],
                   alignment: 'center',
-                  rowSpan: 5
+                  rowSpan: 5,
                 },
                 {image: base64Image, width: 175, height: 60, rowSpan: 5, alignment: 'center',border: [false, false, false, false],margin: [0, 3, 0, 0] }
               ],
@@ -289,7 +289,7 @@ export class FaenadosComponent implements OnInit {
               ],
               [
                 {text: 'DESTINATARIO:', bold: true, fontSize: 7},
-                {text: animal.ingreso.destinatario.nombre+'/Cód:'+animal.ingreso.destinatario.codigo, fontSize: 7, colSpan: 4},
+                {text: animal.ingreso.destinatario.nombre, fontSize: 7, colSpan: 4},
                 {},
                 {},
                 {},
@@ -306,11 +306,15 @@ export class FaenadosComponent implements OnInit {
                 {} // Celda vacía para mantener la estructura
               ],
               [
-                {text: 'ESPECIE:', bold: true, fontSize: 7},
-                {text: animal.ingreso.especie, fontSize: 7},
+                {text: 'ESPECIE:',  fontSize: 7},
+                {text: animal.ingreso.especie,  fontSize: 7},
                 {text: 'FECHA F.:', fontSize: 7},
                 {text: animal.ingreso.fecha_faenamiento, fontSize: 7},
-                {text: 'SUBCÓD:'+animal.SubCod, fontSize: 7},
+                {text: [
+                  {  text: 'ID:',fontSize: 7 }, // Estilo para 'ID:'
+                  { text: animal.codigo_secuencial, bold: true,fontSize: 9 } // Estilo para el código secuencial
+                ],
+              },
                 {},
                 {}
               ]
