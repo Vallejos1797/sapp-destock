@@ -4,8 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { MainService } from '../../services/main.service';
 import { firstValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+
+// Asigna las fuentes a pdfMake
+pdfMake.vfs = pdfFonts as any;import jsPDF from 'jspdf';
 import Swal from 'sweetalert2';
 
 import { BALANCE } from '../../constants/balance.constants';
@@ -187,32 +190,7 @@ export class FaenadosComponent implements OnInit {
       .replace(/{{SUBCOD}}/g, animal.SubCod);
   }
 
-  async imprimir(animal: any) {
-    await this.loadHtmlFile(animal);
 
-    const container = document.createElement('div');
-    container.style.position = 'absolute';
-    container.style.left = '-9999px';
-    container.innerHTML = this.htmlContent;
-    document.body.appendChild(container);
-
-    html2canvas(container).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'p',
-        unit: 'mm',
-        format: 'a4',
-      });
-
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.autoPrint();
-      window.open(pdf.output('bloburl'), '_blank');
-      document.body.removeChild(container);
-    });
-  }
 
   getFormattedDate(): string {
     const fecha = new Date(this.filter.fecha_faenamiento);
@@ -236,4 +214,142 @@ export class FaenadosComponent implements OnInit {
     this.filter.fecha_faenamiento = event.target.value
     this.getAnimals()
   }
+
+  getBase64Image(imgUrl: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'Anonymous'; // Asegúrate de que la imagen no esté bloqueada por políticas de CORS
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0);
+        const dataURL = canvas.toDataURL('image/png');
+        resolve(dataURL);
+      };
+      img.onerror = (error) => {
+        reject(error);
+      };
+      img.src = imgUrl;
+    });
+  }
+
+
+  async imprimir(animal: any)
+
+  {
+    const base64Image = await this.getBase64Image('assets/logo_01.png'); // Usa la ruta relativa
+
+
+    // Definir el contenido del documento PDF
+    const documentDefinition: any = {
+      pageSize: { width: 115, height: 581.18 }, // Tamaño en puntos
+      pageOrientation: 'landscape', // Establecer orientación horizontal
+      margin: [0, 0, 0, 0], // Establecer márgenes
+      content: [
+        {
+          absolutePosition: {x: 4, y: 4},
+          table: {
+            widths: [52, 40, 40, 40, 40, 44, 'auto'],
+            body: [
+              [
+                {text: 'ORIGEN:', bold: true, fontSize: 7},
+                {text: animal.origen, fontSize: 7, colSpan: 4},
+                {},
+                {},
+                {},
+                {
+                  stack: [
+                    {text: [
+                        {  text: 'ID:', bold: true,fontSize: 7, alignment: 'center'  }, // Estilo para 'ID:'
+                        { text: animal.codigo_secuencial, fontSize: 14 } // Estilo para el código secuencial
+                      ],
+                    },
+                    { text: 'PESO CANAL:', bold: true, fontSize: 7, alignment: 'center' },
+                    { text: animal.peso_faenado + ' LB', fontSize: 14, alignment: 'center' }
+                  ],
+                  alignment: 'center',
+                  rowSpan: 5
+                },
+                {image: base64Image, width: 175, height: 60, rowSpan: 5, alignment: 'center',border: [false, false, false, false],margin: [0, 3, 0, 0] }
+              ],
+              [
+                {text: 'DESTINO:', bold: true, fontSize: 7},
+                {
+                  text: animal.destino,
+                  fontSize: 7,
+                  colSpan: 4
+                },
+                {},
+                {},
+                {},
+                {},
+                {} // Columna vertical para "PESO CANAL"
+              ],
+              [
+                {text: 'DESTINATARIO:', bold: true, fontSize: 7},
+                {text: animal.ingreso.destinatario.nombre+'/Cód:'+animal.ingreso.destinatario.codigo, fontSize: 7, colSpan: 4},
+                {},
+                {},
+                {},
+                {},
+                {} // Celda vacía para mantener la estructura
+              ],
+              [
+                {text: 'MOVILIZACIÓN:', bold: true, fontSize: 7},
+                {text: animal.movilizacion, fontSize: 7, colSpan: 4},
+                {},
+                {},
+                {},
+                {},
+                {} // Celda vacía para mantener la estructura
+              ],
+              [
+                {text: 'ESPECIE:', bold: true, fontSize: 7},
+                {text: animal.ingreso.especie, fontSize: 7},
+                {text: 'FECHA F.:', fontSize: 7},
+                {text: animal.ingreso.fecha_faenamiento, fontSize: 7},
+                {text: 'SUBCÓD:'+animal.SubCod, fontSize: 7},
+                {},
+                {}
+              ]
+            ]
+          },
+          layout: {
+            hLineWidth: () => 0.2, // Grosor de las líneas horizontales
+            vLineWidth: () => 0.2, // Grosor de las líneas verticales
+            hLineColor: () => '#d3d3d3', // Color de las líneas horizontales
+            vLineColor: () => '#d3d3d3', // Color de las líneas verticales
+            paddingLeft: () => 2, // Espaciado interno a la izquierda
+            paddingRight: () => 2, // Espaciado interno a la derecha
+            paddingTop: () => 2, // Espaciado interno en la parte superior
+            paddingBottom: () => 2 // Espaciado interno en la parte inferior
+          }
+        }
+      ],
+      styles: {
+        header: {
+          fontSize: 10, // Tamaño de fuente del encabezado
+          bold: true,
+          margin: [0, 0, 0, 0] // Establecer márgenes
+        }
+      }
+    };
+
+    // Generar el PDF y abrir el diálogo de impresión
+    // pdfMake.createPdf(documentDefinition).open();
+    pdfMake.createPdf(documentDefinition).getBlob((blob:any) => {
+      const url = URL.createObjectURL(blob);
+      const win = window.open(url);
+      if (win) {
+        win.focus();
+      } else {
+        // Manejar el caso donde la ventana no se abre
+        console.error('No se pudo abrir la ventana de impresión');
+      }
+    });
+
+  }
+
 }
