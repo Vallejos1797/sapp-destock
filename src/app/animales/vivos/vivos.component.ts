@@ -24,6 +24,7 @@ export class VivosComponent implements OnInit {
     page: 1,
     per_page: 10,
     tipoAnimal: 'inicio',
+    fecha_faenamiento:''
   };
   especies: any[] = [];
   table: any =
@@ -48,6 +49,8 @@ export class VivosComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = this.Main.getSession();
+    console.log('-->',this.getDate())
+    this.filter.fecha_faenamiento=this.getDate()
     this.getEspecies('getEspeciesVivos').then(r => this.getAnimals())
   }
 
@@ -56,7 +59,7 @@ export class VivosComponent implements OnInit {
     this.loadingAnimales = true;
 
     try {
-      const result: any = await firstValueFrom(this.Main.getEspecies(especie));
+      const result: any = await firstValueFrom(this.Main.getEspecies(especie,{ fecha_faenamiento:this.filter.fecha_faenamiento}));
       console.log(result);
       this.especies = result.data;
       if (this.especies.length > 0) {
@@ -138,17 +141,27 @@ export class VivosComponent implements OnInit {
     this.getAnimals()
   }
 
-  imprimir(animal: any) {
-    console.log('a imprimir', animal)
-  }
-
   getFormattedDate(): string {
-    return this.todayDate.toLocaleDateString('es-ES', {
+    const fecha = new Date(this.filter.fecha_faenamiento);
+    const fechaAjustada = new Date(fecha.getTime() + fecha.getTimezoneOffset() * 60000);
+
+    return fechaAjustada.toLocaleDateString('es-ES', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
+  }
+  getDate(): string {
+    const year = this.todayDate.getFullYear();
+    const month = String(this.todayDate.getMonth() + 1).padStart(2, '0'); // Mes (0-indexado)
+    const day = String(this.todayDate.getDate()).padStart(2, '0'); // Día
+    return `${year}-${month}-${day}`;
+  }
+  changeFecha(event:any){
+    console.log('envio fecha:',event.target.value)
+    this.filter.fecha_faenamiento = event.target.value
+    this.getAnimals()
   }
 
 

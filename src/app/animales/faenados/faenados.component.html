@@ -42,6 +42,16 @@
      </div>
    </div>
  </div>
+    <div class="d-flex gap-2">
+      <h4>Seleccione fecha:</h4>
+      <input
+        (change)="changeFecha($event)"
+        type="date"
+        id="fecha"
+        [ngModel]="filter.fecha_faenamiento"
+        class="form-control w-25"
+      />
+    </div>
 
 
 

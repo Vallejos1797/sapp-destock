@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -46,8 +46,18 @@ export class MainService {
   }
 
 
-  getAnimalesByCodeAndPagination( filters:any) {
-    return this.Http.get(`${this.uri}/peso/${filters.tipoAnimal}/getAnimales?codigo=${filters.code}&per_page=${filters.per_page}&page=${filters.page}&especie=${filters.especie}`);
+  getAnimalesByCodeAndPagination(filters: any) {
+    // Crear los parámetros dinámicamente a partir de los filtros
+    let params = new HttpParams();
+
+    Object.keys(filters).forEach((key) => {
+      if (filters[key] !== undefined && filters[key] !== null) {
+        params = params.set(key, filters[key]);
+      }
+    });
+
+    // Realizar la solicitud GET con los parámetros
+    return this.Http.get(`${this.uri}/peso/${filters.tipoAnimal}/getAnimales`, { params });
   }
 
   getWeight(params: any ) {
@@ -57,10 +67,6 @@ export class MainService {
   }
 
   saveLifeWeightAnimal(animalID: number, weight: number, userID: number) {
-    let body: any = {
-      peso: weight,
-      id_user: userID
-    };
     return this.Http.put(`${this.uri}/peso/inicio/${animalID}/guardarPesoInicio?peso=${weight}&id_user=${userID}`, {});
   }
 
@@ -74,8 +80,19 @@ export class MainService {
     return this.Http.post(`${this.uri}/peso/final/guardarPesoFinal`, body);
   }
 
-  getEspecies(tipoEspecie: string) {
-    return this.Http.get(`${this.uri}/peso/${tipoEspecie}`);
+  getEspecies(tipoEspecie: string, body: any) {
+    console.log('llega...', body);
+
+    // Convertir el objeto body en parámetros de consulta
+    let params = new HttpParams();
+    Object.keys(body).forEach((key) => {
+      if (body[key] !== undefined && body[key] !== null) {
+        params = params.set(key, body[key]);
+      }
+    });
+
+    // Enviar la solicitud GET con parámetros
+    return this.Http.get(`${this.uri}/peso/${tipoEspecie}`, { params });
   }
 
 }
