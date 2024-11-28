@@ -130,7 +130,7 @@ export class FaenadosComponent implements OnInit {
           text: 'No se encontró la balanza,vuelva a iniciar sesión',
           icon: 'warning',
         });
-        sessionStorage.removeItem('UENCUBA');
+        localStorage.removeItem('UENCUBA');
         this.Router.navigate(['/inicio-de-sesion'])
         return;
       }

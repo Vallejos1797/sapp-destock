@@ -17,15 +17,15 @@ export class MainService {
   ) { }
 
   saveSession(user: any) {
-    return sessionStorage.setItem('UENCUBA', JSON.stringify(user));
+    return localStorage.setItem('UENCUBA', JSON.stringify(user));
   }
 
   destroySession() {
-    return sessionStorage.removeItem('UENCUBA');
+    return localStorage.removeItem('UENCUBA');
   }
 
   getSession() {
-    return JSON.parse(sessionStorage.getItem('UENCUBA') || '{}');
+    return JSON.parse(localStorage.getItem('UENCUBA') || '{}');
   }
 
   login(credentials: any) {

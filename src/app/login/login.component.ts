@@ -34,9 +34,9 @@ export class LoginComponent implements OnInit {
     await this.getPorts();
     BALANCE.puerto = this.puerto;
     this.puertoSeleccionado = BALANCE.puerto;
-    const user = sessionStorage.getItem('UENCUBA');
+    const user = localStorage.getItem('UENCUBA');
     if (user) {
-      // Si existe el valor en sessionStorage, navega a la ruta '/proceso-de-pesaje'
+      // Si existe el valor en localStorage, navega a la ruta '/proceso-de-pesaje'
       this.Router.navigate(['/proceso-de-pesaje']);
     }
   }
