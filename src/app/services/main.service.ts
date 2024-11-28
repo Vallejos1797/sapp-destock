@@ -94,5 +94,9 @@ export class MainService {
     // Enviar la solicitud GET con parámetros
     return this.Http.get(`${this.uri}/peso/${tipoEspecie}`, { params });
   }
+  getPorts() {
+    return this.Http.get(`${this.uriLocal}/balance/get-ports`);
+  }
+
 
 }

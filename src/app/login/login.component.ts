@@ -22,6 +22,7 @@ export class LoginComponent implements OnInit {
   credentials: any = {}
   mostrarContenido: boolean = false;
   puertoSeleccionado: string = '';
+  private puerto=''
   constructor(
     private Main: MainService,
     private Router: Router
@@ -29,13 +30,27 @@ export class LoginComponent implements OnInit {
   }
 
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    await this.getPorts();
+    BALANCE.puerto = this.puerto;
     this.puertoSeleccionado = BALANCE.puerto;
     const user = sessionStorage.getItem('UENCUBA');
     if (user) {
       // Si existe el valor en sessionStorage, navega a la ruta '/proceso-de-pesaje'
       this.Router.navigate(['/proceso-de-pesaje']);
     }
+  }
+  async getPorts(){
+    let puertos: any = await this.Main.getPorts().toPromise();
+    if (puertos.length > 1) {
+      Swal.fire({
+        text: 'Más de un dispositivo conectado',
+        icon: 'warning',
+      });
+    }
+   this.puerto=puertos[0]?.path;
+    console.log(puertos);
+    console.log(this.puerto);
   }
 
   async login() {
@@ -82,12 +97,7 @@ export class LoginComponent implements OnInit {
     this.mostrarContenido = !this.mostrarContenido; // Cambia el estado
   }
 
-  changePuerto(event: any) {
-    console.log(event);
-    console.log(event.target.value);
-    BALANCE.puerto = event.target.value;
 
-  }
 
 
 }

@@ -12,6 +12,7 @@ pdfMake.vfs = pdfFonts as any;import jsPDF from 'jspdf';
 import Swal from 'sweetalert2';
 
 import { BALANCE } from '../../constants/balance.constants';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-faenados',
@@ -47,7 +48,7 @@ export class FaenadosComponent implements OnInit {
   selectedGancho: any = {};
   htmlContent: string = ''; // Aquí cargaremos el HTML
 
-  constructor(private Main: MainService, private http: HttpClient) {}
+  constructor(private Main: MainService, private http: HttpClient, private Router: Router) {}
 
   ngOnInit(): void {
     const today = new Date();
@@ -122,7 +123,17 @@ export class FaenadosComponent implements OnInit {
 
   async guardar(animal: any) {
     animal.loading = true;
+
     try {
+      if (!BALANCE.puerto) {
+        Swal.fire({
+          text: 'No se encontró la balanza,vuelva a iniciar sesión',
+          icon: 'warning',
+        });
+        sessionStorage.removeItem('UENCUBA');
+        this.Router.navigate(['/inicio-de-sesion'])
+        return;
+      }
       const result: any = await firstValueFrom(
         this.Main.getWeight({ puerto: BALANCE.puerto })
       );

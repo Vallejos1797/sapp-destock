@@ -5,6 +5,7 @@ import { MainService } from "../../services/main.service";
 import { firstValueFrom } from "rxjs";
 import Swal from "sweetalert2";
 import { BALANCE } from '../../constants/balance.constants';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-vivos',
@@ -45,6 +46,7 @@ export class VivosComponent implements OnInit {
 
   constructor(
     private Main: MainService,
+    private Router: Router
   ) {
 
   }
@@ -119,6 +121,17 @@ export class VivosComponent implements OnInit {
   async guardar(animal: any) {
     animal.loading = true;
     try {
+
+      if (!BALANCE.puerto) {
+        Swal.fire({
+          text: 'No se encontró la balanza,vuelva a iniciar sesión',
+          icon: 'warning',
+        });
+        sessionStorage.removeItem('UENCUBA');
+        this.Router.navigate(['/inicio-de-sesion'])
+        return;
+      }
+
       const result: any = await firstValueFrom(this.Main.getWeight({puerto:BALANCE.puerto}));
       if (!result || !result.weight) {
         Swal.fire({
