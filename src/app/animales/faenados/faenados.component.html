@@ -50,6 +50,8 @@
         id="fecha"
         [ngModel]="filter.fecha_faenamiento"
         class="form-control w-25"
+        [min]="minDate"
+        [max]="maxDate"
       />
     </div>
 

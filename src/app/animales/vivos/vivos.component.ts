@@ -18,6 +18,8 @@ import { BALANCE } from '../../constants/balance.constants';
 export class VivosComponent implements OnInit {
   todayDate: Date = new Date();
   selectedSpecies: any;
+  minDate: string = '';
+  maxDate: string = '';
   filter: any = {
     code: '',
     especie: '',
@@ -48,6 +50,17 @@ export class VivosComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const today = new Date();
+    const yesterday = new Date(today);
+    const tomorrow = new Date(today);
+
+    // Ajusta las fechas para el rango permitido
+    yesterday.setDate(today.getDate() - 1);
+    tomorrow.setDate(today.getDate() + 1);
+
+    // Formatea las fechas a 'YYYY-MM-DD'
+    this.minDate = this.formatDate(yesterday);
+    this.maxDate = this.formatDate(tomorrow);
     this.user = this.Main.getSession();
     console.log('-->',this.getDate())
     this.filter.fecha_faenamiento=this.getDate()
@@ -71,6 +84,12 @@ export class VivosComponent implements OnInit {
     }
   }
 
+  private formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
 
   async getAnimals() {
     this.loadingAnimales = true;
@@ -162,6 +181,7 @@ export class VivosComponent implements OnInit {
     console.log('envio fecha:',event.target.value)
     this.filter.fecha_faenamiento = event.target.value
     this.getAnimals()
+    this.getEspecies('getEspeciesVivos');
   }
 
 

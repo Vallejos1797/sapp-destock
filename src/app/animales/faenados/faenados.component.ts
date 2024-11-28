@@ -23,6 +23,8 @@ import { BALANCE } from '../../constants/balance.constants';
 export class FaenadosComponent implements OnInit {
   todayDate: Date = new Date();
   selectedSpecies: any;
+  minDate: string = '';
+  maxDate: string = '';
   filter: any = {
     code: '',
     especie: '',
@@ -48,6 +50,17 @@ export class FaenadosComponent implements OnInit {
   constructor(private Main: MainService, private http: HttpClient) {}
 
   ngOnInit(): void {
+    const today = new Date();
+    const yesterday = new Date(today);
+    const tomorrow = new Date(today);
+
+    // Ajusta las fechas para el rango permitido
+    yesterday.setDate(today.getDate() - 1);
+    tomorrow.setDate(today.getDate() + 1);
+
+    // Formatea las fechas a 'YYYY-MM-DD'
+    this.minDate = this.formatDate(yesterday);
+    this.maxDate = this.formatDate(tomorrow);
     this.user = this.Main.getSession();
     this.filter.fecha_faenamiento=this.getDate()
     this.getEspecies('getEspeciesFaenados').then(() => this.getAnimals());
@@ -56,7 +69,8 @@ export class FaenadosComponent implements OnInit {
   async getEspecies(especie: string) {
     this.loadingEspecies = true;
     this.loadingAnimales = true;
-
+    this.ganchos=[];
+    this.selectedGancho={};
     try {
       const result: any = await firstValueFrom(this.Main.getEspecies(especie,{ fecha_faenamiento:this.filter.fecha_faenamiento}));
       this.especies = result.data;
@@ -70,7 +84,12 @@ export class FaenadosComponent implements OnInit {
       this.loadingEspecies = false;
     }
   }
-
+  private formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
   async getAnimals() {
     this.loadingAnimales = true;
     this.table.data = [];
@@ -213,6 +232,7 @@ export class FaenadosComponent implements OnInit {
     console.log('envio fecha:',event.target.value)
     this.filter.fecha_faenamiento = event.target.value
     this.getAnimals()
+    this.getEspecies('getEspeciesFaenados');
   }
 
   getBase64Image(imgUrl: string): Promise<string> {
