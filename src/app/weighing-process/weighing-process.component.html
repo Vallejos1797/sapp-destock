@@ -4,21 +4,24 @@
       <i class="fa fa-home "></i>
     </button>
     <div class="d-flex justify-content-around align-items-center gap-2 ">
+      <button (click)="togglePanel()" class="settings-button">
+        <i class="fas fa-cog"></i> <!-- Icono de tuerca -->
+      </button>
       <img src="assets/images/logo.png" alt="Logo" width="40" height="40" class="d-inline-block align-text-top">
       <div class="d-flex flex-column text-center">
         Proceso de Pesaje
-      <strong >
-        Animales {{ animalStatusSelected.name | titlecase }}
-      </strong>
+        <strong >
+          Animales {{ animalStatusSelected.name | titlecase }}
+        </strong>
       </div>
     </div>
     <span class="navbar-text d-flex text-danger">
       <button class="btn btn-danger btn-sm" (click)="logout()">
          <i class="fa fa-window-close" aria-hidden="true"> Salir del sistema </i>
       </button>
-    
-    
-     
+
+
+
     </span>
   </div>
 </nav>
@@ -39,5 +42,30 @@
     </div>
   </div>
 </div>
+<!-- Modal -->
+<div *ngIf="isPanelOpen" class="top-panel">
+  <div class="panel-content">
+    <!-- Título -->
+    <h3>Seleccionar Puerto Serial</h3>
+
+    <!-- Selector de puertos -->
+    <select [(ngModel)]="selectedPort">
+      <option *ngFor="let port of ports" [value]="port.path">
+        {{ port.path }}
+      </option>
+    </select>
+
+    <!-- Botón de recargar -->
+    <button (click)="loadPorts()" class="brand-background-color">
+      <i class="fas fa-sync-alt"></i> Recargar Puertos
+    </button>
+
+    <!-- Botón de cerrar -->
+    <button (click)="togglePanel()" class="bg-danger">
+      <i class="fas fa-times"></i> Cerrar
+    </button>
+  </div>
+</div>
+
 
 

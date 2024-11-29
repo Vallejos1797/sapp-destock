@@ -11,8 +11,7 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts as any;import jsPDF from 'jspdf';
 import Swal from 'sweetalert2';
 
-import { BALANCE } from '../../constants/balance.constants';
-import { Router } from '@angular/router';
+import { SerialPortService } from '../../services/SerialPortService';
 
 @Component({
   selector: 'app-faenados',
@@ -48,7 +47,7 @@ export class FaenadosComponent implements OnInit {
   selectedGancho: any = {};
   htmlContent: string = ''; // Aquí cargaremos el HTML
 
-  constructor(private Main: MainService, private http: HttpClient, private Router: Router) {}
+  constructor(private Main: MainService, private http: HttpClient,private serialPortService: SerialPortService) {}
 
   ngOnInit(): void {
     const today = new Date();
@@ -125,17 +124,20 @@ export class FaenadosComponent implements OnInit {
     animal.loading = true;
 
     try {
-      if (!BALANCE.puerto) {
+      // Obtén el puerto desde un servicio compartido
+      const puertoSeleccionado = this.serialPortService.getSelectedPort();
+
+      // Verifica si el puerto está disponible
+      if (!puertoSeleccionado) {
         Swal.fire({
-          text: 'No se encontró la balanza,vuelva a iniciar sesión',
+          text: 'No se detectó la balanza. Verifique la conexión y seleccione el puerto serial adecuado.',
           icon: 'warning',
         });
-        localStorage.removeItem('UENCUBA');
-        this.Router.navigate(['/inicio-de-sesion'])
+
         return;
       }
       const result: any = await firstValueFrom(
-        this.Main.getWeight({ puerto: BALANCE.puerto })
+        this.Main.getWeight({ puerto: puertoSeleccionado })
       );
 
       if (!result || !result.weight) {

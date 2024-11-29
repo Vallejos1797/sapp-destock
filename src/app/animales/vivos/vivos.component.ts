@@ -4,8 +4,10 @@ import { CommonModule } from "@angular/common";
 import { MainService } from "../../services/main.service";
 import { firstValueFrom } from "rxjs";
 import Swal from "sweetalert2";
-import { BALANCE } from '../../constants/balance.constants';
+
 import { Router } from '@angular/router';
+import { SerialPortService } from '../../services/SerialPortService';
+
 
 @Component({
   selector: 'app-vivos',
@@ -46,7 +48,8 @@ export class VivosComponent implements OnInit {
 
   constructor(
     private Main: MainService,
-    private Router: Router
+    private Router: Router,
+    private serialPortService: SerialPortService
   ) {
 
   }
@@ -120,19 +123,23 @@ export class VivosComponent implements OnInit {
 
   async guardar(animal: any) {
     animal.loading = true;
+
     try {
 
-      if (!BALANCE.puerto) {
-        Swal.fire({
-          text: 'No se encontró la balanza,vuelva a iniciar sesión',
-          icon: 'warning',
-        });
-        localStorage.removeItem('UENCUBA');
-        this.Router.navigate(['/inicio-de-sesion'])
-        return;
-      }
+        // Obtén el puerto desde un servicio compartido
+        const puertoSeleccionado = this.serialPortService.getSelectedPort();
 
-      const result: any = await firstValueFrom(this.Main.getWeight({puerto:BALANCE.puerto}));
+        // Verifica si el puerto está disponible
+        if (!puertoSeleccionado) {
+          Swal.fire({
+            text: 'No se detectó la balanza. Verifique la conexión y seleccione el puerto serial adecuado.',
+            icon: 'warning',
+          });
+
+          return;
+        }
+
+      const result: any = await firstValueFrom(this.Main.getWeight({puerto:puertoSeleccionado}));
       if (!result || !result.weight) {
         Swal.fire({
           text: 'No se obtuvo valores de la balanza',

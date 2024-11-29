@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 import {VivosComponent} from "../animales/vivos/vivos.component";
 import {FaenadosComponent} from "../animales/faenados/faenados.component";
 import { BALANCE } from '../constants/balance.constants';
+import { SerialPortService } from '../services/SerialPortService';
+
 
 @Component({
   selector: 'app-weighing-process',
@@ -26,12 +28,16 @@ export class WeighingProcessComponent implements OnInit {
   animalStatus: any[] = [];
   animalStatusSelected: any = {};
 
-
+  ports: any[] = [];
+  selectedPort: string | null = null;
+  isModalOpen: boolean = false;
+  isPanelOpen: boolean = false;
 
   user: any;
   constructor(
     private Main: MainService,
-    private Router: Router
+    private Router: Router,
+    private serialPortService: SerialPortService
   ) {
     console.log('llega al home..')
   }
@@ -39,6 +45,16 @@ export class WeighingProcessComponent implements OnInit {
   ngOnInit(): void {
     this.user = this.Main.getSession();
     this.getTipoAnimales();
+    // Suscribirse a los cambios en la lista de puertos
+    this.serialPortService.ports$.subscribe((ports) => {
+      this.ports = ports;
+    });
+
+    // Suscribirse al puerto seleccionado
+    this.serialPortService.selectedPort$.subscribe((port) => {
+      this.selectedPort = port;
+    });
+
   }
 
 
@@ -88,5 +104,61 @@ export class WeighingProcessComponent implements OnInit {
   home(){
     this.animalStatusSelected={}
   }
+  openModal() {
+    this.isModalOpen = true;
+    this.isPanelOpen=true;
+    console.log( this.isModalOpen);
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+  }
+  async loadPorts() {
+    try {
+      const ports: any = await this.Main.getPorts().toPromise(); // Obtiene los datos de la API
+      this.ports = ports; // Almacena los puertos en la propiedad de clase
+      console.log(this.ports );
+      if (this.ports.length > 0) {
+        this.selectedPort = this.ports[0].path; // Selecciona automáticamente el primer puerto
+      } else {
+
+        this.selectedPort = ''; // Establece un valor por defecto si no hay puertos
+        Swal.fire({
+          text: 'No se detectó ningún puerto. Por favor, verifique que el dispositivo esté correctamente conectado y vuelva a intentarlo.',
+          icon: 'warning'
+        });
+        return; // Salir del método si no hay peso
+      }
+
+      // Almacena los puertos y el puerto seleccionado en el servicio compartido
+      this.serialPortService.setPorts(this.ports);
+      this.serialPortService.setSelectedPort(this.selectedPort);
+    } catch (error) {
+      console.error('Error al cargar los puertos:', error);
+      alert('No se pudieron cargar los puertos. Intente nuevamente.');
+    }
+  }
+
+  selectPort(port: string | null) {
+    if (port) {
+      this.serialPortService.setSelectedPort(port); // Si es un string válido, lo asigna
+    } else {
+      console.error('Invalid port selected'); // Manejo de errores o casos inválidos
+    }
+  }
+
+
+  togglePanel() {
+    this.isPanelOpen = !this.isPanelOpen; // Alterna entre abrir y cerrar
+  }
+  closePanelOnClickOutside(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+
+    // Si el clic no ocurrió dentro del panel o el botón de tuerca, cerrar el panel
+    if (!target.closest('.top-panel') && !target.closest('.settings-button')) {
+      this.isPanelOpen = false;
+    }
+  }
+
 
 }

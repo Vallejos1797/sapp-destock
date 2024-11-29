@@ -1,0 +1,116 @@
+/* General del contenido */
+.panel-content {
+  display: flex;
+  flex-wrap: wrap; /* Permite que los elementos se adapten en pantallas pequeñas */
+  align-items: center;
+  gap: 15px; /* Espaciado entre elementos */
+}
+.top-panel {
+  position: absolute;
+  top: 60px; /* Ajusta según la altura del navbar */
+  left: 50%;
+  transform: translateX(-50%); /* Centra horizontalmente */
+  width: 80%; /* Ajusta el ancho del panel */
+  max-width: 600px; /* Limita el ancho máximo */
+  background-color: #ffffff;
+  border-bottom: 2px solid #e5e5e5;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 20px; /* Aumenta el padding para dar más espacio */
+  display: flex;
+  flex-direction: column; /* Cambia el contenido a columna */
+  align-items: center; /* Centra el contenido */
+  gap: 15px;
+  border-radius: 8px; /* Bordes redondeados */
+}
+
+
+
+.panel-content h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  flex-basis: 100%; /* Ocupa toda la fila en pantallas pequeñas */
+  text-align: left;
+}
+
+/* Estilo para el selector */
+.panel-content select {
+  flex-grow: 1;
+  max-width: 300px; /* Limita el ancho */
+  padding: 5px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  color: #333;
+  transition: border-color 0.3s ease;
+}
+
+.panel-content select:focus {
+  border-color: #007bff; /* Resalta el borde al enfocar */
+  outline: none;
+}
+
+/* Botones */
+.panel-content button {
+  padding: 6px 15px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Espaciado para íconos */
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.panel-content button:hover {
+  background-color: #0056b3;
+}
+
+/* Íconos en botones */
+.panel-content button i {
+  font-size: 16px;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .panel-content {
+    flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+    align-items: flex-start;
+  }
+
+  .panel-content select {
+    max-width: 100%; /* El selector ocupa todo el ancho */
+  }
+
+  .panel-content button {
+    width: 100%; /* Los botones ocupan todo el ancho */
+    justify-content: center; /* Centra el texto en botones */
+  }
+}
+.settings-button {
+
+  top: 10px;
+  right: 10px;
+  font-size: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1000;
+  color: #6c757d;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+.settings-button:hover {
+  transform: rotate(90deg); /* Rotación al pasar el mouse */
+  color: #495057;
+}
+
+.settings-button i {
+  font-size: 24px; /* Tamaño del ícono */
+}
+

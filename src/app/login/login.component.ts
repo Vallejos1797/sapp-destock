@@ -5,6 +5,7 @@ import { MainService } from '../services/main.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { BALANCE } from '../constants/balance.constants';
+import { SerialPortService } from '../services/SerialPortService';
 
 @Component({
   selector: 'app-login',
@@ -23,16 +24,24 @@ export class LoginComponent implements OnInit {
   mostrarContenido: boolean = false;
   puertoSeleccionado: string = '';
   private puerto=''
+  ports: any[] = [];
+  selectedPort: string = '';
   constructor(
     private Main: MainService,
-    private Router: Router
+    private Router: Router,
+    private serialPortService: SerialPortService
   ) {
   }
 
 
   async ngOnInit(): Promise<void> {
     await this.getPorts();
+
+    this.serialPortService.setPorts(this.ports); // Almacena los puertos en el servicio compartido
+    this.serialPortService.setSelectedPort(this.selectedPort); // Establece el puerto seleccionado
+
     BALANCE.puerto = this.puerto;
+    console.log(BALANCE.puerto)
     this.puertoSeleccionado = BALANCE.puerto;
     const user = localStorage.getItem('UENCUBA');
     if (user) {
@@ -51,6 +60,12 @@ export class LoginComponent implements OnInit {
    this.puerto=puertos[0]?.path;
     console.log(puertos);
     console.log(this.puerto);
+
+    this.ports = puertos;
+    if (this.ports.length > 0) {
+      this.selectedPort = this.ports[0].path; // Selecciona automáticamente el primer puerto
+    }
+
   }
 
   async login() {
