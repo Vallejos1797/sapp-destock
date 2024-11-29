@@ -49,39 +49,38 @@
               </div>
             </div>
           </form>
-          <div class="flex flex-col items-start m-2">
-            <button
-              class=" btn btn-secondary text-white font-bold py-2 px-4 rounded flex items-center"
-              (click)="toggleContenido()"
-            >
-              <i class="fas fa-cog"></i> <!-- Icono de engranaje -->
+          <!--
+         <div class="flex flex-col items-start m-2">
+                       <button
+                         class=" btn btn-secondary text-white font-bold py-2 px-4 rounded flex items-center"
+                         (click)="toggleContenido()"
+                       >
+                         <i class="fas fa-cog"></i>
+                        </button>
+                        <div *ngIf="mostrarContenido" class="mt-2 border p-4 rounded bg-gray-100">
+                          <div>
+                            <span>Puerto de balanza:
+                            </span>
+                            <select [(ngModel)]="puertoSeleccionado" class="border border-gray-300 rounded p-2">
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                              <option value="6">6</option>
+                              <option value="7">7</option>
+                              <option value="8">8</option>
+                              <option value="9">9</option>
+                              <option value="10">10</option>
+                            </select>
+                          </div>
 
-            </button>
-
-            <div *ngIf="mostrarContenido" class="mt-2 border p-4 rounded bg-gray-100">
-
-              <div>
-                <span>Puerto de balanza:
-                </span>
-                <select [(ngModel)]="puertoSeleccionado" (change)="changePuerto($event)" class="border border-gray-300 rounded p-2">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="10">10</option>
-                </select>
+                        </div>
+         </div>
+        !-->
+                    </div>
+                  </div>
+                </div>
+                <div class="col-4"></div>
               </div>
-
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-4"></div>
-  </div>
-</div>
