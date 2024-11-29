@@ -1,5 +1,8 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import {Observable} from 'rxjs';
+import {ICredenciales, ILoginResponse} from '../Interfaces/login';
+import {TSerialPortsResponse} from '../Interfaces/port';
 
 @Injectable({
   providedIn: 'root',
@@ -28,23 +31,9 @@ export class MainService {
     return JSON.parse(localStorage.getItem('UENCUBA') || '{}');
   }
 
-  login(credentials: any) {
-    // return this.Http.post(`${this.uri}/auth/login`, credentials);
-    return this.Http.post(`${this.uri}/login`, {name: credentials.username, password: credentials.password});
+  login(credentials: ICredenciales): Observable<ILoginResponse> {
+    return this.Http.post<ILoginResponse>(`${this.uri}/login`,credentials);
   }
-
-  getAnimalStatus() {
-    return this.Http.get(`${this.uriLocal}/animal-status`);
-  }
-
-  getPieceTypes() {
-    return this.Http.get(`${this.uri}/peso/getTipoPiezas`);
-  }
-
-  getPieces(pieceType: number, animalID: number) {
-    return this.Http.get(`${this.uri}/peso/getPiezas?id_tipoPiezas=${pieceType}&id_animales=${animalID}`);
-  }
-
 
   getAnimalesByCodeAndPagination(filters: any) {
     // Crear los parámetros dinámicamente a partir de los filtros
@@ -61,7 +50,6 @@ export class MainService {
   }
 
   getWeight(params: any ) {
-    console.log("va enviar", params);
     const queryParams = new URLSearchParams(params).toString();
     return this.Http.get(`${this.uriLocal}/balance/get-weight?${queryParams}`);
   }
@@ -94,8 +82,8 @@ export class MainService {
     // Enviar la solicitud GET con parámetros
     return this.Http.get(`${this.uri}/peso/${tipoEspecie}`, { params });
   }
-  getPorts() {
-    return this.Http.get(`${this.uriLocal}/balance/get-ports`);
+  getPorts(): Observable<TSerialPortsResponse> {
+    return this.Http.get<TSerialPortsResponse>(`${this.uriLocal}/balance/get-ports`);
   }
 
 
