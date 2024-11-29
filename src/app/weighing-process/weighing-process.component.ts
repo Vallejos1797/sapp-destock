@@ -1,14 +1,12 @@
-import { Component, OnInit,ElementRef, ViewChild } from '@angular/core';
-import { MainService } from '../services/main.service';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {MainService} from '../../services/main.service';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
 import Swal from 'sweetalert2';
-// import { ModalDirective, ModalModule } from 'ngx-bootstrap/modal';
-import { Router } from '@angular/router';
+import {Router} from '@angular/router';
 import {VivosComponent} from "../animales/vivos/vivos.component";
 import {FaenadosComponent} from "../animales/faenados/faenados.component";
-import { BALANCE } from '../constants/balance.constants';
-import { SerialPortService } from '../services/SerialPortService';
+import {SerialPortService} from '../../services/SerialPortService';
 
 
 @Component({
@@ -28,7 +26,7 @@ export class WeighingProcessComponent implements OnInit {
   animalStatus: any[] = [];
   animalStatusSelected: any = {};
 
-  ports: any[] = [];
+  ports: any= [];
   selectedPort: string | null = null;
   isModalOpen: boolean = false;
   isPanelOpen: boolean = false;
@@ -115,8 +113,8 @@ export class WeighingProcessComponent implements OnInit {
   }
   async loadPorts() {
     try {
-      const ports: any = await this.Main.getPorts().toPromise(); // Obtiene los datos de la API
-      this.ports = ports; // Almacena los puertos en la propiedad de clase
+       // Obtiene los datos de la API
+      this.ports = await this.Main.getPorts().toPromise(); // Almacena los puertos en la propiedad de clase
       console.log(this.ports );
       if (this.ports.length > 0) {
         this.selectedPort = this.ports[0].path; // Selecciona automáticamente el primer puerto

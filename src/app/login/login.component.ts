@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MainService } from '../services/main.service';
+import { MainService } from '../../services/main.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { BALANCE } from '../constants/balance.constants';
-import { SerialPortService } from '../services/SerialPortService';
+import { SerialPortService } from '../../services/SerialPortService';
 
 @Component({
   selector: 'app-login',

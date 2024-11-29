@@ -17,7 +17,7 @@
         <button
           *ngFor="let especie of especies"
           class="btn btn-outline-primary"
-          [ngClass]="{'active': selectedSpecies?.id === especie.id}"
+          [ngClass]="{'active': selectedSpecies.id === especie.id}"
           (click)="onEspecieChange(especie)"
         >
           {{ especie.nombre }}
@@ -27,8 +27,8 @@
       <!--      <div *ngIf="especies.length > 3; else buttonGroup">-->
       <!--        <label for="speciesSelect">Seleccionar Especie:</label>-->
       <!--        <select id="speciesSelect" class="form-control" [(ngModel)]="selectedSpecies" (change)="onEspecieChange($event.target.value)">-->
-      <!--          <option *ngFor="let especie of especies" [ngValue]="especie">-->
-      <!--            {{ especie.nombre }}-->
+      <!--          <option *ngFor="let especie.ts of especies" [ngValue]="especie.ts">-->
+      <!--            {{ especie.ts.nombre }}-->
       <!--          </option>-->
       <!--        </select>-->
       <!--      </div>-->
@@ -36,12 +36,12 @@
       <!--      <ng-template #buttonGroup>-->
       <!--        <div class="btn-group" role="group" aria-label="Botones de especies">-->
       <!--          <button-->
-      <!--            *ngFor="let especie of especies"-->
+      <!--            *ngFor="let especie.ts of especies"-->
       <!--            class="btn btn-outline-primary"-->
-      <!--            [ngClass]="{'active': selectedSpecies?.id === especie.id}"-->
-      <!--            (click)="onEspecieChange(especie)"-->
+      <!--            [ngClass]="{'active': selectedSpecies?.id === especie.ts.id}"-->
+      <!--            (click)="onEspecieChange(especie.ts)"-->
       <!--          >-->
-      <!--            {{ especie.nombre }}-->
+      <!--            {{ especie.ts.nombre }}-->
       <!--          </button>-->
       <!--        </div>-->
       <!--      </ng-template>-->

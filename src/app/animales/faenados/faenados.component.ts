@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MainService } from '../../services/main.service';
+import { MainService } from '../../../services/main.service';
 import { firstValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 
 // Asigna las fuentes a pdfMake
-pdfMake.vfs = pdfFonts as any;import jsPDF from 'jspdf';
+pdfMake.vfs = pdfFonts as any;
 import Swal from 'sweetalert2';
 
-import { SerialPortService } from '../../services/SerialPortService';
+import { SerialPortService } from '../../../services/SerialPortService';
 
 @Component({
   selector: 'app-faenados',
@@ -203,7 +203,7 @@ export class FaenadosComponent implements OnInit {
           // Llamar a replacePlaceholders para reemplazar datos
           this.htmlContent = this.replacePlaceholders(htmlTemplate, animal);
         },
-        error: (err) => {
+        error: () => {
         },
       });
   }

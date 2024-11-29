@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from "@angular/common";
-import { MainService } from "../../services/main.service";
+import { MainService } from "../../../services/main.service";
 import { firstValueFrom } from "rxjs";
 import Swal from "sweetalert2";
 
 import { Router } from '@angular/router';
-import { SerialPortService } from '../../services/SerialPortService';
+import { SerialPortService } from '../../../services/SerialPortService';
+import {especie} from '../../../interfaces/especie';
 
 
 @Component({
@@ -20,7 +21,7 @@ import { SerialPortService } from '../../services/SerialPortService';
 })
 export class VivosComponent implements OnInit {
   todayDate: Date = new Date();
-  selectedSpecies: any;
+  selectedSpecies!: especie;
   minDate: string = '';
   maxDate: string = '';
   filter: any = {
@@ -69,7 +70,7 @@ export class VivosComponent implements OnInit {
     this.user = this.Main.getSession();
     console.log('-->',this.getDate())
     this.filter.fecha_faenamiento=this.getDate()
-    this.getEspecies('getEspeciesVivos').then(r => this.getAnimals())
+    this.getEspecies('getEspeciesVivos').then(() => this.getAnimals())
   }
 
   async getEspecies(especie: string) {
@@ -115,9 +116,9 @@ export class VivosComponent implements OnInit {
     console.log('Especie seleccionada:', especie);
     this.filter.page = 1
     this.table.current_page = 1
-    this.selectedSpecies = especie; // Actualiza la especie seleccionada
-    this.filter.especie = especie.nombre; // Actualiza el filtro de especie
-    this.getAnimals(); // Obtiene los animales para la especie seleccionada
+    this.selectedSpecies = especie; // Actualiza la especie.ts seleccionada
+    this.filter.especie = especie.nombre; // Actualiza el filtro de especie.ts
+    this.getAnimals(); // Obtiene los animales para la especie.ts seleccionada
   }
 
 
