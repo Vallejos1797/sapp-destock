@@ -7,6 +7,7 @@ import {Router} from '@angular/router';
 import {VivosComponent} from "../animales/vivos/vivos.component";
 import {FaenadosComponent} from "../animales/faenados/faenados.component";
 import {SerialPortService} from '../../services/SerialPortService';
+import {IAnimal} from '../../interfaces/animalResponse';
 
 
 @Component({
@@ -73,7 +74,7 @@ export class WeighingProcessComponent implements OnInit {
     ];
   }
 
-  toggleSelectAnimalStatus(animal?: any) {
+  toggleSelectAnimalStatus(animal?: IAnimal) {
     this.animalStatusSelected = animal;
   }
 

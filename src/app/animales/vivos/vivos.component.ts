@@ -8,6 +8,13 @@ import Swal from "sweetalert2";
 import { Router } from '@angular/router';
 import { SerialPortService } from '../../../services/SerialPortService';
 import {especie} from '../../../interfaces/especie';
+import {IAnimal, IAnimalResponse} from '../../../interfaces/animalResponse';
+import {IEspecie, IEspecieResponse} from '../../../interfaces/especieResponse';
+import {IFilter} from '../../../interfaces/filter';
+import { IWeightResponse } from '../../../interfaces/weightResponse';
+import {ITable} from '../../../interfaces/table';
+import {IUser} from '../../../interfaces/login';
+
 
 
 @Component({
@@ -24,7 +31,7 @@ export class VivosComponent implements OnInit {
   selectedSpecies!: especie;
   minDate: string = '';
   maxDate: string = '';
-  filter: any = {
+  filter: IFilter  = {
     code: '',
     especie: '',
     page: 1,
@@ -32,8 +39,8 @@ export class VivosComponent implements OnInit {
     tipoAnimal: 'inicio',
     fecha_faenamiento:''
   };
-  especies: any[] = [];
-  table: any =
+  especies: IEspecie[] = [];
+  table: ITable<IAnimal> =
     {
       current_page: 1,
       per_page: 10,
@@ -41,7 +48,7 @@ export class VivosComponent implements OnInit {
       data: [],
     };
   totalPages: number = 0;
-  user: any;
+  user!: IUser;
   loadingEspecies: boolean = false;
   loadingAnimales: boolean = false;
 
@@ -78,7 +85,7 @@ export class VivosComponent implements OnInit {
     this.loadingAnimales = true;
 
     try {
-      const result: any = await firstValueFrom(this.Main.getEspecies(especie,{ fecha_faenamiento:this.filter.fecha_faenamiento}));
+      const result: IEspecieResponse  = await firstValueFrom(this.Main.getEspecies(especie,{ fecha_faenamiento:this.filter.fecha_faenamiento}));
       console.log(result);
       this.especies = result.data;
       if (this.especies.length > 0) {
@@ -101,10 +108,11 @@ export class VivosComponent implements OnInit {
     this.loadingAnimales = true;
     this.table.data = []
     try {
-      const result: any = await firstValueFrom(this.Main.getAnimalesByCodeAndPagination(this.filter));
+      const result: IAnimalResponse = await firstValueFrom(this.Main.getAnimalesByCodeAndPagination(this.filter));
       this.table.data = result.data.ingresos;
-      this.table.current_page = result.data.current_page;
-      this.table.per_page = result.data.per_page;
+      // Conversión explícita de propiedades
+      this.table.current_page = parseInt(result.data.current_page, 10);
+      this.table.per_page = parseInt(result.data.per_page, 10);
       this.table.total = result.data.total;
       this.totalPages = Math.ceil(this.table.total / this.table.per_page);
     } finally {
@@ -112,7 +120,7 @@ export class VivosComponent implements OnInit {
     }
   }
 
-  onEspecieChange(especie: any) {
+  onEspecieChange(especie: IEspecie) {
     console.log('Especie seleccionada:', especie);
     this.filter.page = 1
     this.table.current_page = 1
@@ -122,7 +130,7 @@ export class VivosComponent implements OnInit {
   }
 
 
-  async guardar(animal: any) {
+  async guardar(animal: IAnimal) {
     animal.loading = true;
 
     try {
@@ -140,7 +148,7 @@ export class VivosComponent implements OnInit {
           return;
         }
 
-      const result: any = await firstValueFrom(this.Main.getWeight({puerto:puertoSeleccionado}));
+      const result: IWeightResponse = await firstValueFrom(this.Main.getWeight({puerto:puertoSeleccionado}));
       if (!result || !result.weight) {
         Swal.fire({
           text: 'No se obtuvo valores de la balanza',
@@ -170,9 +178,10 @@ export class VivosComponent implements OnInit {
     }
   }
 
-  changeSearch(event: any) {
-    this.filter.code = event.target.value.toString().toUpperCase()
-    this.getAnimals()
+  changeSearch(event: Event): void {
+    const input = event.target as HTMLInputElement; // Cast explícito al elemento HTMLInputElement
+    this.filter.code = input.value.toString().toUpperCase(); // Accede a input.value
+    this.getAnimals();
   }
   changePage(page: number) {
     console.log(page)
@@ -182,6 +191,10 @@ export class VivosComponent implements OnInit {
   }
 
   getFormattedDate(): string {
+    if (!this.filter.fecha_faenamiento) {
+      console.error('La fecha de faenamiento no está definida');
+      return ''; // O algún valor por defecto
+    }
     const fecha = new Date(this.filter.fecha_faenamiento);
     const fechaAjustada = new Date(fecha.getTime() + fecha.getTimezoneOffset() * 60000);
 
@@ -198,9 +211,10 @@ export class VivosComponent implements OnInit {
     const day = String(this.todayDate.getDate()).padStart(2, '0'); // Día
     return `${year}-${month}-${day}`;
   }
-  changeFecha(event:any){
-    console.log('envio fecha:',event.target.value)
-    this.filter.fecha_faenamiento = event.target.value
+  changeFecha(event:Event){
+    const input = event.target as HTMLInputElement; // Cast explícito al elemento HTMLInputElement
+    console.log('envio fecha:', input.value);
+    this.filter.fecha_faenamiento = input.value;
     this.getAnimals()
     this.getEspecies('getEspeciesVivos');
   }

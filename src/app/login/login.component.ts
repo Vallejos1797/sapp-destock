@@ -9,9 +9,9 @@ import { firstValueFrom } from 'rxjs';
 import { MainService } from '../../services/main.service';
 import { SerialPortService } from '../../services/SerialPortService';
 
-import { ICredenciales, ILoginResponse, IUser } from '../../Interfaces/login';
-import { ErrorResponse } from '../../Interfaces/error';
-import { TSerialPortsResponse } from '../../Interfaces/port';
+import { ICredenciales, ILoginResponse, IUser } from '../../interfaces/login';
+import { ErrorResponse } from '../../interfaces/error';
+import { TSerialPortsResponse } from '../../interfaces/port';
 
 @Component({
   selector: 'app-login',

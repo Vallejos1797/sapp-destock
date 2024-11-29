@@ -1,9 +1,14 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
-import {ICredenciales, ILoginResponse} from '../Interfaces/login';
-import {TSerialPortsResponse} from '../Interfaces/port';
 import {environment} from '../environments/environment';
+import {ICredenciales, ILoginResponse, IUser} from '../interfaces/login';
+import {TSerialPortsResponse} from '../interfaces/port';
+import {IAnimalResponse, IProducto} from '../interfaces/animalResponse';
+import { IEspecieResponse } from '../interfaces/especieResponse';
+import {IWeightResponse} from '../interfaces/weightResponse';
+import {IAnimalFilters} from '../interfaces/animalFilters';
+import {IEspecieBody} from '../interfaces/especieBody';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +22,7 @@ export class MainService {
     private Http: HttpClient
   ) { }
 
-  saveSession(user: any) {
+  saveSession(user: IUser) {
     return localStorage.setItem('UENCUBA', JSON.stringify(user));
   }
 
@@ -33,7 +38,7 @@ export class MainService {
     return this.Http.post<ILoginResponse>(`${this.uri}/login`,credentials);
   }
 
-  getAnimalesByCodeAndPagination(filters: any) {
+  getAnimalesByCodeAndPagination(filters: IAnimalFilters): Observable<IAnimalResponse> {
     // Crear los parámetros dinámicamente a partir de los filtros
     let params = new HttpParams();
 
@@ -43,20 +48,21 @@ export class MainService {
       }
     });
 
-    // Realizar la solicitud GET con los parámetros
-    return this.Http.get(`${this.uri}/peso/${filters.tipoAnimal}/getAnimales`, { params });
+    // Realizar la solicitud GET con los parámetros y especificar el tipo devuelto
+    return this.Http.get<IAnimalResponse>(`${this.uri}/peso/${filters.tipoAnimal}/getAnimales`, { params });
   }
 
-  getWeight(params: any ) {
+  getWeight(params: any):Observable<IWeightResponse> {
+    console.log("va enviar", params);
     const queryParams = new URLSearchParams(params).toString();
-    return this.Http.get(`${this.uriLocal}/balance/get-weight?${queryParams}`);
+    return this.Http.get<IWeightResponse>(`${this.uriLocal}/balance/get-weight?${queryParams}`);
   }
 
   saveLifeWeightAnimal(animalID: number, weight: number, userID: number) {
     return this.Http.put(`${this.uri}/peso/inicio/${animalID}/guardarPesoInicio?peso=${weight}&id_user=${userID}`, {});
   }
 
-  saveDeadWeightAnimal(animalID: number, userID: number, products: any[]) {
+  saveDeadWeightAnimal(animalID: number, userID: number, products: IProducto[]) {
     let body: any = {
       id_animales: animalID,
       id_user: userID,
@@ -66,7 +72,7 @@ export class MainService {
     return this.Http.post(`${this.uri}/peso/final/guardarPesoFinal`, body);
   }
 
-  getEspecies(tipoEspecie: string, body: any) {
+  getEspecies(tipoEspecie: string, body:  IEspecieBody): Observable<IEspecieResponse> {
     console.log('llega...', body);
 
     // Convertir el objeto body en parámetros de consulta
@@ -78,7 +84,7 @@ export class MainService {
     });
 
     // Enviar la solicitud GET con parámetros
-    return this.Http.get(`${this.uri}/peso/${tipoEspecie}`, { params });
+    return this.Http.get<IEspecieResponse>(`${this.uri}/peso/${tipoEspecie}`, { params });
   }
   getPorts(): Observable<TSerialPortsResponse> {
     return this.Http.get<TSerialPortsResponse>(`${this.uriLocal}/balance/get-ports`);

@@ -19,7 +19,7 @@
        <button
          *ngFor="let especie of especies"
          class="btn btn-outline-primary"
-         [ngClass]="{'active': selectedSpecies?.id === especie.id}"
+         [ngClass]="{'active': selectedSpecies.id === especie.id}"
          (click)="onEspecieChange(especie)"
        >
          {{ especie.nombre }}
@@ -34,7 +34,7 @@
        <button
          *ngFor="let gancho of ganchos"
          class="btn btn-outline-primary"
-         [ngClass]="{'active': selectedGancho?.id === gancho.id}"
+         [ngClass]="{'active': selectedGancho.id === gancho.id}"
          (click)="onGanchoChange(gancho)"
        >
          {{ gancho.nombre +' ('+gancho.peso+')'}}
@@ -133,12 +133,12 @@
             </samp>
           </td>
           <td>
-            {{ animal?.peso_faenado>0 ? animal?.peso_faenado:'0.00' }} lb
+            {{ animal.peso_faenado>0 ? animal.peso_faenado:'0.00' }} lb
           </td>
           <td>
-            <button *ngIf="!animal?.loading " class="btn  btn-guardar me-2" (click)="guardar(animal)">GUARDAR</button>
-            <button *ngIf="animal?.loading" class="btn  btn-guardando">Cargando...</button>
-            <button *ngIf="!animal?.loading && animal?.peso_faenado>0" class="btn btn-imprimir" (click)="imprimir(animal)">IMPRIMIR</button>
+            <button *ngIf="!animal.loading " class="btn  btn-guardar me-2" (click)="guardar(animal)">GUARDAR</button>
+            <button *ngIf="animal.loading" class="btn  btn-guardando">Cargando...</button>
+            <button *ngIf="!animal.loading && animal.peso_faenado>0" class="btn btn-imprimir" (click)="imprimir(animal)">IMPRIMIR</button>
           </td>
         </tr>
         </tbody>

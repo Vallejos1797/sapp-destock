@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MainService } from '../../../services/main.service';
 import { firstValueFrom } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 
@@ -12,6 +11,12 @@ pdfMake.vfs = pdfFonts as any;
 import Swal from 'sweetalert2';
 
 import { SerialPortService } from '../../../services/SerialPortService';
+import {IEspecie, IEspecieResponse, IGancho} from '../../../interfaces/especieResponse';
+import {IFilter} from '../../../interfaces/filter';
+import {ITable} from '../../../interfaces/table';
+import {IAnimal, IAnimalResponse} from '../../../interfaces/animalResponse';
+import {IUser} from '../../../interfaces/login';
+import {IWeightResponse} from '../../../interfaces/weightResponse';
 
 @Component({
   selector: 'app-faenados',
@@ -22,32 +27,42 @@ import { SerialPortService } from '../../../services/SerialPortService';
 })
 export class FaenadosComponent implements OnInit {
   todayDate: Date = new Date();
-  selectedSpecies: any;
+  selectedSpecies!: IEspecie;
   minDate: string = '';
   maxDate: string = '';
-  filter: any = {
+  filter: IFilter = {
     code: '',
     especie: '',
     page: 1,
     per_page: 10,
     tipoAnimal: 'final',
+    fecha_faenamiento:''
   };
-  especies: any[] = [];
-  ganchos: any[] = [];
-  table: any = {
+  especies: IEspecie[] = [];
+  ganchos: IGancho[] = [];
+  table: ITable<IAnimal> = {
     current_page: 1,
     per_page: 10,
     total: 0,
     data: [],
   };
   totalPages: number = 0;
-  user: any;
+  user!: IUser;
   loadingEspecies: boolean = false;
   loadingAnimales: boolean = false;
-  selectedGancho: any = {};
-  htmlContent: string = ''; // Aquí cargaremos el HTML
+  selectedGancho: IGancho = {
+    id: 0,
+    peso: '',
+    nombre: '',
+    unidad: '',
+    pivot: {
+      id_especies: 0,
+      id_ganchos: 0
+    }
+  };
 
-  constructor(private Main: MainService, private http: HttpClient,private serialPortService: SerialPortService) {}
+
+  constructor(private Main: MainService, private serialPortService: SerialPortService) {}
 
   ngOnInit(): void {
     const today = new Date();
@@ -70,9 +85,18 @@ export class FaenadosComponent implements OnInit {
     this.loadingEspecies = true;
     this.loadingAnimales = true;
     this.ganchos=[];
-    this.selectedGancho={};
+    this.selectedGancho = {
+      id: 0,
+      peso: '',
+      nombre: '',
+      unidad: '',
+      pivot: {
+        id_especies: 0,
+        id_ganchos: 0
+      }
+    };
     try {
-      const result: any = await firstValueFrom(this.Main.getEspecies(especie,{ fecha_faenamiento:this.filter.fecha_faenamiento}));
+      const result: IEspecieResponse = await firstValueFrom(this.Main.getEspecies(especie,{ fecha_faenamiento:this.filter.fecha_faenamiento}));
       this.especies = result.data;
       if (this.especies.length > 0) {
         this.selectedSpecies = this.especies[0];
@@ -94,12 +118,13 @@ export class FaenadosComponent implements OnInit {
     this.loadingAnimales = true;
     this.table.data = [];
     try {
-      const result: any = await firstValueFrom(
+      const result: IAnimalResponse = await firstValueFrom(
         this.Main.getAnimalesByCodeAndPagination(this.filter)
       );
       this.table.data = result.data.ingresos;
-      this.table.current_page = result.data.current_page;
-      this.table.per_page = result.data.per_page;
+      // Conversión explícita de propiedades
+      this.table.current_page = parseInt(result.data.current_page, 10);
+      this.table.per_page = parseInt(result.data.per_page, 10);
       this.table.total = result.data.total;
       this.totalPages = Math.ceil(this.table.total / this.table.per_page);
     } finally {
@@ -107,7 +132,7 @@ export class FaenadosComponent implements OnInit {
     }
   }
 
-  onEspecieChange(especie: any) {
+  onEspecieChange(especie: IEspecie) {
     this.filter.page = 1;
     this.selectedSpecies = especie;
     this.filter.especie = especie.nombre;
@@ -116,7 +141,7 @@ export class FaenadosComponent implements OnInit {
     this.getAnimals();
   }
 
-  onGanchoChange(gancho: any) {
+  onGanchoChange(gancho: IGancho) {
     this.selectedGancho = gancho;
   }
 
@@ -136,7 +161,7 @@ export class FaenadosComponent implements OnInit {
 
         return;
       }
-      const result: any = await firstValueFrom(
+      const result: IWeightResponse  = await firstValueFrom(
         this.Main.getWeight({ puerto: puertoSeleccionado })
       );
 
@@ -148,7 +173,7 @@ export class FaenadosComponent implements OnInit {
         return;
       }
 
-      animal.peso_faenado = Math.floor((result.weight - this.selectedGancho.peso) * 100) / 100;
+      animal.peso_faenado = Math.floor((result.weight - parseFloat(this.selectedGancho.peso)) * 100) / 100;
       if (animal.peso_faenado <= 0) {
         Swal.fire({
           html: `
@@ -162,8 +187,11 @@ export class FaenadosComponent implements OnInit {
       }
       animal.productos[0] = {
         id_producto: animal.productos[0].producto_id,
-        peso: animal.peso_faenado,
-      };
+       peso: animal.peso_faenado,
+     };
+
+
+
       await new Promise((resolve) => setTimeout(resolve, 1000));
       await firstValueFrom(
         this.Main.saveDeadWeightAnimal(
@@ -195,36 +223,12 @@ export class FaenadosComponent implements OnInit {
     this.getAnimals();
   }
 
-  loadHtmlFile(animal: any) {
-    this.http
-      .get('assets/my-template.html', { responseType: 'text' })
-      .subscribe({
-        next: (htmlTemplate) => {
-          // Llamar a replacePlaceholders para reemplazar datos
-          this.htmlContent = this.replacePlaceholders(htmlTemplate, animal);
-        },
-        error: () => {
-        },
-      });
-  }
-  // Método para reemplazar placeholders en el HTML
-  replacePlaceholders(html: string, animal: any): string {
-    return html
-      .replace(/{{ORIGEN}}/g, animal.origen)
-      .replace(/{{DESTINO}}/g, animal.destino)
-      .replace(/{{DESTINATARIO}}/g, animal.ingreso.destinatario.nombre)
-      .replace(/{{CODIGO_DESTINATARIO}}/g, animal.ingreso.destinatario.codigo)
-      .replace(/{{MOVILIZACION}}/g, animal.movilizacion)
-      .replace(/{{ESPECIE}}/g, animal.ingreso.especie)
-      .replace(/{{CODIGO_ANIMAL}}/g, animal.codigo_secuencial)
-      .replace(/{{PESO_CANAL}}/g, animal.peso_faenado)
-      .replace(/{{FECHA_F}}/g, animal.ingreso.fecha_faenamiento)
-      .replace(/{{SUBCOD}}/g, animal.SubCod);
-  }
-
-
-
   getFormattedDate(): string {
+    if (!this.filter.fecha_faenamiento) {
+      console.error('La fecha de faenamiento no está definida');
+      return ''; // O algún valor por defecto
+    }
+
     const fecha = new Date(this.filter.fecha_faenamiento);
     const fechaAjustada = new Date(fecha.getTime() + fecha.getTimezoneOffset() * 60000);
 
@@ -269,7 +273,7 @@ export class FaenadosComponent implements OnInit {
   }
 
 
-  async imprimir(animal: any)
+  async imprimir(animal: IAnimal)
 
   {
     const base64Image = await this.getBase64Image('assets/logo_01.png'); // Usa la ruta relativa
@@ -354,14 +358,7 @@ export class FaenadosComponent implements OnInit {
             ]
           },
           layout: {
-            hLineWidth: () => 0.2, // Grosor de las líneas horizontales
-            vLineWidth: () => 0.2, // Grosor de las líneas verticales
-            hLineColor: () => '#d3d3d3', // Color de las líneas horizontales
-            vLineColor: () => '#d3d3d3', // Color de las líneas verticales
-            paddingLeft: () => 2, // Espaciado interno a la izquierda
-            paddingRight: () => 2, // Espaciado interno a la derecha
-            paddingTop: () => 2, // Espaciado interno en la parte superior
-            paddingBottom: () => 2 // Espaciado interno en la parte inferior
+
           }
         }
       ],
