@@ -3,17 +3,15 @@ import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
 import {ICredenciales, ILoginResponse} from '../Interfaces/login';
 import {TSerialPortsResponse} from '../Interfaces/port';
+import {environment} from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MainService {
 
-  // uri: string = 'http://46.183.117.133/api';
- // uri: string = 'http://185.253.153.225/api';
-  uriLocal: string = 'http://localhost:3000/api';
-
-  uri: string ='https://epfyprocai.com/api'
+  uri: string = environment.API_URL;  // Usará la URL según el entorno (desarrollo o producción)
+  uriLocal: string = environment.API_URL_LOCAL;  // URL local
 
   constructor(
     private Http: HttpClient
