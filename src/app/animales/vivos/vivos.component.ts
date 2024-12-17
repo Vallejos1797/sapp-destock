@@ -5,7 +5,7 @@ import { MainService } from "../../../services/main.service";
 import { firstValueFrom } from "rxjs";
 import Swal from "sweetalert2";
 
-import { Router } from '@angular/router';
+
 import { SerialPortService } from '../../../services/SerialPortService';
 import {especie} from '../../../interfaces/especie';
 import {IAnimal, IAnimalResponse} from '../../../interfaces/animalResponse';
@@ -32,7 +32,7 @@ export class VivosComponent implements OnInit {
   minDate: string = '';
   maxDate: string = '';
   filter: IFilter  = {
-    code: '',
+    codigo: '',
     especie: '',
     page: 1,
     per_page: 10,
@@ -56,7 +56,6 @@ export class VivosComponent implements OnInit {
 
   constructor(
     private Main: MainService,
-    private Router: Router,
     private serialPortService: SerialPortService
   ) {
 
@@ -141,7 +140,7 @@ export class VivosComponent implements OnInit {
         // Verifica si el puerto está disponible
         if (!puertoSeleccionado) {
           Swal.fire({
-            text: 'No se detectó la balanza. Verifique la conexión y seleccione el puerto serial adecuado.',
+            text: 'No se ha seleccionado ningún puerto. Por favor, seleccione un puerto disponible.',
             icon: 'warning',
           });
 
@@ -149,9 +148,18 @@ export class VivosComponent implements OnInit {
         }
 
       const result: IWeightResponse = await firstValueFrom(this.Main.getWeight({puerto:puertoSeleccionado}));
-      if (!result || !result.weight) {
+        console.log(result);
+        let text='No se obtuvo valores de la balanza';
+        if (result?.error) {
+          text = 'No hay comunicación con la balanza. Verifique el driver del dispositivo e intente nuevamente. Como última alternativa, asegúrese de que el dispositivo esté correctamente conectado y vuelva a intentarlo.';
+        } else if (Number.isNaN(result.weight)) {
+          text = 'Datos inválidos: Peso obtenido es incorrecto.';
+        } else if (result.weight === 0) {
+          text = 'El peso obtenido es 0.';
+        }
+      if (!result || !result.weight||result?.error||Number.isNaN(result.weight)||result.weight === 0) {
         Swal.fire({
-          text: 'No se obtuvo valores de la balanza',
+          text: text,
           icon: 'warning'
         });
         return; // Salir del método si no hay peso
@@ -180,7 +188,7 @@ export class VivosComponent implements OnInit {
 
   changeSearch(event: Event): void {
     const input = event.target as HTMLInputElement; // Cast explícito al elemento HTMLInputElement
-    this.filter.code = input.value.toString().toUpperCase(); // Accede a input.value
+    this.filter.codigo = input.value.toString().toUpperCase(); // Accede a input.value
     this.getAnimals();
   }
   changePage(page: number) {

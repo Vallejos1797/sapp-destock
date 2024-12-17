@@ -123,7 +123,7 @@ export class WeighingProcessComponent implements OnInit {
 
         this.selectedPort = ''; // Establece un valor por defecto si no hay puertos
         Swal.fire({
-          text: 'No se detectó ningún puerto. Por favor, verifique que el dispositivo esté correctamente conectado y vuelva a intentarlo.',
+          text: `No se detectó ningún puerto disponible. Por favor, verifique el driver del dispositivo e intente nuevamente. Como última alternativa, asegúrese de que el dispositivo esté correctamente conectado y vuelva a intentarlo.`,
           icon: 'warning'
         });
         return; // Salir del método si no hay peso

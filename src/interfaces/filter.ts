@@ -1,5 +1,5 @@
 export interface IFilter {
-  code: string; // Código de búsqueda
+  codigo: string; // Código de búsqueda
   especie: string; // Especie seleccionada
   page: number; // Página actual
   per_page: number; // Registros por página

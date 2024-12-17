@@ -31,7 +31,7 @@ export class FaenadosComponent implements OnInit {
   minDate: string = '';
   maxDate: string = '';
   filter: IFilter = {
-    code: '',
+    codigo: '',
     especie: '',
     page: 1,
     per_page: 10,
@@ -155,7 +155,7 @@ export class FaenadosComponent implements OnInit {
       // Verifica si el puerto está disponible
       if (!puertoSeleccionado) {
         Swal.fire({
-          text: 'No se detectó la balanza. Verifique la conexión y seleccione el puerto serial adecuado.',
+          text: 'No se ha seleccionado ningún puerto. Por favor, seleccione un puerto disponible.',
           icon: 'warning',
         });
 
@@ -165,12 +165,20 @@ export class FaenadosComponent implements OnInit {
         this.Main.getWeight({ puerto: puertoSeleccionado })
       );
 
-      if (!result || !result.weight) {
+      let text='No se obtuvo valores de la balanza';
+      if (result?.error) {
+        text = 'No hay comunicación con la balanza. Verifique el driver del dispositivo e intente nuevamente. Como última alternativa, asegúrese de que el dispositivo esté correctamente conectado y vuelva a intentarlo.';
+      } else if (Number.isNaN(result.weight)) {
+        text = 'Datos inválidos: Peso obtenido es incorrecto.';
+      } else if (result.weight === 0) {
+        text = 'El peso obtenido es 0.';
+      }
+      if (!result || !result.weight||result?.error||Number.isNaN(result.weight)||result.weight === 0) {
         Swal.fire({
-          text: 'No se obtuvo valores de la balanza',
-          icon: 'warning',
+          text: text,
+          icon: 'warning'
         });
-        return;
+        return; // Salir del método si no hay peso
       }
 
       animal.peso_faenado = Math.floor((result.weight - parseFloat(this.selectedGancho.peso)) * 100) / 100;
@@ -213,7 +221,7 @@ export class FaenadosComponent implements OnInit {
   }
 
   changeSearch(event: any) {
-    this.filter.code = event.target.value.toString().toUpperCase();
+    this.filter.codigo = event.target.value.toString().toUpperCase();
     this.getAnimals();
   }
 
@@ -299,12 +307,16 @@ export class FaenadosComponent implements OnInit {
                 {
                   stack: [
                     {text: [
-                        {  text: 'Cód:', bold: true,fontSize: 6, alignment: 'center'  }, // Estilo para 'ID:'
-                        { text:animal.SubCod+'-'+animal.ingreso.destinatario.codigo, fontSize: 10 } // Estilo para el código secuencial
+                        {  text: 'Cód:',fontSize: 6, alignment: 'center'  }, // Estilo para 'ID:'
+                        { text:animal.SubCod+'-'+animal.ingreso.destinatario.codigo,bold: true, fontSize: 10 } // Estilo para el código secuencial
                       ],
                     },
-                    { text: 'PESO CANAL:', bold: true, fontSize: 6, alignment: 'center' },
-                    { text: animal.peso_faenado + 'LB', fontSize: 12, alignment: 'center' }
+                    { text: 'PESO CANAL:', fontSize: 6, alignment: 'center' },
+                    {text:[
+                      {text: animal.peso_faenado , fontSize: 12, alignment: 'center'},
+                      {text: 'LB', fontSize: 8, alignment: 'center'}
+                        ]
+                    }
                   ],
                   alignment: 'center',
                   rowSpan: 5,
@@ -315,7 +327,7 @@ export class FaenadosComponent implements OnInit {
                 {text: 'DESTINO:', bold: true, fontSize: 7},
                 {
                   text: animal.destino,
-                  fontSize: 7,
+                  fontSize: 6,
                   colSpan: 4
                 },
                 {},
@@ -349,7 +361,7 @@ export class FaenadosComponent implements OnInit {
                 {text: animal.ingreso.fecha_faenamiento, fontSize: 7},
                 {text: [
                   {  text: 'ID:',fontSize: 7 }, // Estilo para 'ID:'
-                  { text: animal.codigo_secuencial, bold: true,fontSize: 9 } // Estilo para el código secuencial
+                  { text: animal.codigo_secuencial, bold: true,fontSize: 7 } // Estilo para el código secuencial
                 ],
               },
                 {},
