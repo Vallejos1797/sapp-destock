@@ -387,7 +387,10 @@ export class FaenadosComponent implements OnInit {
     // pdfMake.createPdf(documentDefinition).open();
     pdfMake.createPdf(documentDefinition).getBlob((blob:any) => {
       const url = URL.createObjectURL(blob);
+      console.log('URL del blob creado:', url);
       const win = window.open(url);
+      console.log('Resultado de window.open:', win);
+
       if (win) {
         win.focus();
       } else {
