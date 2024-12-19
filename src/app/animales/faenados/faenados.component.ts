@@ -327,7 +327,7 @@ export class FaenadosComponent implements OnInit {
                 {text: 'DESTINO:', bold: true, fontSize: 7},
                 {
                   text: animal.destino,
-                  fontSize: 6,
+                  fontSize: 5.75,
                   colSpan: 4
                 },
                 {},
